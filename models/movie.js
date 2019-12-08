@@ -6,7 +6,7 @@ const { genreSchema } = require("./genre");
 const Movie = mongoose.model(
   "Movies",
   new mongoose.Schema({
-    name: {
+    title: {
       type: String,
       required: true,
       trim: true,

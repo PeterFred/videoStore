@@ -29,7 +29,7 @@ router.post("/", async (req, res) => {
     title: req.body.title,
     genre: {
       //Just select the props wanted
-      _id: genre_id,
+      _id: genre._id,
       name: genre.name
     },
     numberInStock: req.body.numberInStock,
