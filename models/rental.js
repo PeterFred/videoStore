@@ -1,6 +1,6 @@
 const Joi = require("Joi");
 const mongoose = require("mongoose");
-const { movieSchema } = require("./movies");
+//const { movieSchema } = require("./movies");
 
 //Persistance model - whats stored in the DB
 const Rental = mongoose.model(
@@ -8,7 +8,7 @@ const Rental = mongoose.model(
   new mongoose.Schema({
     //Create a lightweight customer / movie schema - can ref _id if needed
     customer: {
-      type: new mongoose.schema({
+      type: new mongoose.Schema({
         name: { type: String, required: true, minlength: 5, maxlength: 50 },
         isGold: { type: Boolean, default: false },
         phone: { type: String, required: true, minlength: 5, maxlength: 50 }
@@ -16,7 +16,7 @@ const Rental = mongoose.model(
       required: true
     },
     movie: {
-      type: new mongoose.schema({
+      type: new mongoose.Schema({
         title: {
           type: String,
           required: true,
@@ -57,5 +57,5 @@ function validateRental(rental) {
   return Joi.validate(rental, schema);
 }
 
-exports.Movie = Movie;
+exports.Rental = Rental;
 exports.validate = validateRental;

@@ -1,10 +1,12 @@
 const { Rental, validate } = require("../models/rental");
 const { Movie } = require("../models/movie");
 const { Customer } = require("../models/customer");
-
+const Fawn = require("fawn"); //Used for mongoDB transactions (instead of 2 stage commit)
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
+
+Fawn.init(mongoose);
 
 router.get("/", async (req, res) => {
   const rentals = await Rental.find().sort("-dateOut");
@@ -42,16 +44,20 @@ router.post("/", async (req, res) => {
     },
     movie: {
       _id: movie._id,
-      title: movice.title,
+      title: movie.title,
       dailyRentalRate: movie.dailyRentalRate
     }
   });
-
-  rental = await rental.save();
-  movie.numberInStock--;
-  movie.save();
-
-  res.send(rental);
+  try {
+    //Groups tasks together to perform as one. If one fails, they all fail
+    new Fawn.Task()
+      .save("rentals", rental) //nb works directly with the collection so must be same
+      .update("movies", { _id: movie._id }, { $inc: { numberInStock: -1 } })
+      .run();
+    res.send(rental);
+  } catch (e) {
+    res.status(500).send("Somthing failed");
+  }
 });
 
 module.exports = router;

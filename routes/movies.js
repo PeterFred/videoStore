@@ -1,5 +1,5 @@
 const { Movie, validate } = require("../models/movie");
-const { Genre } = require("../models/genre");
+const { Genre } = require("../models/rental");
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
@@ -28,7 +28,6 @@ router.post("/", async (req, res) => {
   let movie = new Movie({
     title: req.body.title,
     genre: {
-      //Just select the props wanted
       _id: genre._id,
       name: genre.name
     },
