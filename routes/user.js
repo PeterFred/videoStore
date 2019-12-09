@@ -3,8 +3,6 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const _ = require("lodash");
-const jwt = require("jsonwebtoken");
-const config = require("config");
 
 const bcrypt = require("bcrypt");
 
@@ -21,12 +19,7 @@ router.post("/", async (req, res) => {
   user.password = await bcrypt.hash(user.password, salt);
   await user.save();
 
-  const token = jwt.sign(
-    {
-      _id: user._id
-    },
-    config.get("jwtPrivateKey")
-  );
+  const token = user.generateAuthToken();
 
   res
     .header("x-auth-token", token) //Send custom headers prefixed with x-{name}-token

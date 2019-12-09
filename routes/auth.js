@@ -4,8 +4,6 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const _ = require("lodash");
 const Joi = require("joi");
-const jwt = require("jsonwebtoken");
-const config = require("config");
 
 const bcrypt = require("bcrypt");
 
@@ -21,13 +19,10 @@ router.post("/", async (req, res) => {
 
   //Set private key in console: > set vidly_jwtPrivateKey=mySecureKey
   //Parameter stored in custom-enviornment-variables.json
-  const token = jwt.sign(
-    {
-      _id: user._id
-    },
-    config.get("jwtPrivateKey")
-  );
 
+  //   const token = jwt.sign({_id: user._id},config.get("jwtPrivateKey"));
+  //Above should be generated in Usre Module
+  const token = user.generateAuthToken();
   res.send(token); //return a JSON web token (JWT)
 });
 
