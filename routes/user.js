@@ -3,10 +3,18 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const _ = require("lodash");
+const auth = require("../middleware/auth");
 
 const bcrypt = require("bcrypt");
 
-router.post("/", async (req, res) => {
+//Don't use :id as a param as it can be maliciously inserted
+//End point returns user info
+router.get("/me", auth, async (req, res) => {
+  const user = await User.findById(req.user._id).select("-password");
+  res.send();
+});
+
+router.post("/", auth, async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 

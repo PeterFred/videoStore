@@ -1,5 +1,6 @@
 const Joi = require("Joi");
 const mongoose = require("mongoose");
+Joi.objectId = require("joi-objectid")(Joi);
 
 //Persistance model - whats stored in the DB
 const Rental = mongoose.model(

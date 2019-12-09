@@ -19,7 +19,8 @@ if (!config.get("jwtPrivateKey")) {
 mongoose
   .connect("mongodb://localhost/vidly", {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useCreateIndex: true
   })
   .then(() => console.log("Connected to Vidly MongoDB..."))
   .catch(err => console.error("Could not connect to mongoDB", err));
