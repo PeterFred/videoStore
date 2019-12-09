@@ -22,13 +22,17 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 5,
     maxlength: 1024
-  }
+  },
+  isAdmin: Boolean
 });
 
-//Add a method on the schema to return a JWT token
+//Add a method on the schema to return a JWT token (includes _id & isAdmin)
 //As 'this' is referenced can't use arrow function as it would return the calling function 'this'
 userSchema.methods.generateAuthToken = function() {
-  const token = jwt.sign({ _id: this._id }, config.get("jwtPrivateKey"));
+  const token = jwt.sign(
+    { _id: this._id, isAdmin: this.isAdmin },
+    config.get("jwtPrivateKey")
+  );
   return token;
 };
 
