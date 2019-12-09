@@ -1,5 +1,6 @@
 const genres = require("./routes/genre");
 const users = require("./routes/user");
+const auth = require("./routes/auth");
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -8,6 +9,12 @@ const movies = require("./routes/movies");
 const rentals = require("./routes/rentals");
 const Joi = require("joi");
 Joi.objectId = require("joi-objectid")(Joi);
+const config = require("config");
+
+if (!config.get("jwtPrivateKey")) {
+  console.error("FATAL ERROR: JWT private key is not defined");
+  process.exit(1);
+}
 
 mongoose
   .connect("mongodb://localhost/vidly", {
@@ -23,6 +30,7 @@ app.use("/customers", customers);
 app.use("/movies", movies);
 app.use("/rentals", rentals);
 app.use("/users", users);
+app.use("/auth", auth);
 
 const port = process.env.port || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
