@@ -35,11 +35,11 @@ const Movie = mongoose.model(
 //Joi schema is what the client sends us
 function validateMovie(movie) {
   const schema = {
-    title: Joi.string()
+    title: Joi.objectId()
       .min(5)
       .max(50)
       .required(),
-    genreId: Joi.string().required(),
+    genreId: Joi.objectId().required(),
     numberInStock: Joi.number()
       .min(0)
       .required(),
