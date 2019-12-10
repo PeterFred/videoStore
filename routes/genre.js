@@ -5,10 +5,9 @@ const mongoose = require("mongoose");
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
 
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
   const genres = await Genre.find().sort("name");
   res.send(genres);
-  //return res.send(await Genre.find().sort("name"));
 });
 
 router.get("/:id", async (req, res) => {

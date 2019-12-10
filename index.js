@@ -1,15 +1,20 @@
-const genres = require("./routes/genre");
-const users = require("./routes/user");
-const auth = require("./routes/auth");
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const customers = require("./routes/customers");
-const movies = require("./routes/movies");
-const rentals = require("./routes/rentals");
+
 const Joi = require("joi");
 Joi.objectId = require("joi-objectid")(Joi);
 const config = require("config");
+
+require("express-async-errors");
+const error = require("./middleware/error");
+
+const genres = require("./routes/genre");
+const users = require("./routes/user");
+const auth = require("./routes/auth");
+const customers = require("./routes/customers");
+const movies = require("./routes/movies");
+const rentals = require("./routes/rentals");
 
 if (!config.get("jwtPrivateKey")) {
   console.error("FATAL ERROR: jwtPrivateKey is not defined");
@@ -32,6 +37,10 @@ app.use("/movies", movies);
 app.use("/rentals", rentals);
 app.use("/users", users);
 app.use("/auth", auth);
+
+//Must go after above
+//Collects exceptions, and uses middleware to handle it
+app.use(error);
 
 const port = process.env.port || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
