@@ -8,10 +8,10 @@ const moment = require("moment");
 const Joi = require("Joi");
 
 router.post("/", [auth, validate(validateReturn)], async (req, res) => {
-  const rental = await Rental.findOne({
-    "customer._id": req.body.customerId,
-    "movie._id": req.body.movieId
-  });
+  //Static method: Available on a class (defined in model) eg) Rental.lookup()
+  // Instance method: new User().generateAuthToken() -when working on an object
+
+  const rental = await Rental.lookup(req.body.customerId, req.body.movieId);
 
   if (!rental) res.status(404).send("Rental not found");
 
