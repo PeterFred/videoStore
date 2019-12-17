@@ -10,9 +10,12 @@
 //Set the rental fee
 //Increase the stock
 //Return the rental
+
 const request = require("supertest");
 const { Rental } = require("../../models/rental");
 const mongoose = require("mongoose");
+const { User } = require("../../models/user");
+
 describe("/returns", () => {
   let server;
   let customerId;
@@ -43,11 +46,22 @@ describe("/returns", () => {
     await Rental.remove({});
   });
 
-  it("should return 401 if client is not logged in!", async () => {
+  it("should return 401 if client is not logged in", async () => {
     const res = await request(server)
       .post("/returns")
       .send({ customerId, movieId });
 
     expect(res.status).toBe(401);
+  });
+
+  it("should return 401 400 if customerId is not provided", async () => {
+    const token = new User().generateAuthToken();
+
+    const res = await request(server)
+      .post("/returns")
+      .set("x-auth-token", token)
+      .send({ movieId }); //customerId omitted
+
+    expect(res.status).toBe(400);
   });
 });
