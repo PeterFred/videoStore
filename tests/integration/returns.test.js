@@ -26,11 +26,10 @@ describe("/returns", () => {
   // Define the happy path, and then in each test, we change
   // one parameter that clearly aligns with the name of the test.
   let token;
-  let name;
 
   const exec = () => {
     return request(server)
-      .post("/genres")
+      .post("/returns")
       .set("x-auth-token", token)
       .send({ customerId, movieId });
   };
@@ -84,7 +83,11 @@ describe("/returns", () => {
     const res = await exec();
 
     expect(res.status).toBe(400);
+  });
 
-    expect(res.status).toBe(400);
+  it("should return 404 if no rental found for this customer / movie", async () => {
+    await Rental.remove({});
+    const res = await exec();
+    expect(res.status).toBe(404);
   });
 });
