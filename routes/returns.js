@@ -4,7 +4,6 @@ const { Movie } = require("../models/movie");
 const { Rental } = require("../models/rental");
 const validate = require("../middleware/validate");
 const auth = require("../middleware/auth");
-const moment = require("moment");
 const Joi = require("Joi");
 
 router.post("/", [auth, validate(validateReturn)], async (req, res) => {
@@ -18,16 +17,14 @@ router.post("/", [auth, validate(validateReturn)], async (req, res) => {
   if (rental.dateReturned)
     return res.status(400).send("return already processed");
 
-  //Set the rental fee
-  rental.dateReturned = new Date();
-  const rentalDays = moment().diff(rental.dateOut, "days");
-  rental.rentalFee = rentalDays * rental.movie.dailyRentalRate;
+  //Set the rental fee using an instance method (defined in the class)
+  rental.return();
   await rental.save();
 
   //Increase the movie stock by 1
   await Movie.update({ _id: rental.movie._id }, { $inc: { numberInStock: 1 } });
 
-  return res.status(200).send();
+  return res.send(); //nb 200 sent by default
 });
 
 function validateReturn(req) {

@@ -1,6 +1,7 @@
 const Joi = require("Joi");
 const mongoose = require("mongoose");
 Joi.objectId = require("joi-objectid")(Joi);
+const moment = require("moment");
 
 const rentalSchema = new mongoose.Schema({
   //Create a lightweight customer / movie schema - can ref _id if needed
@@ -50,6 +51,14 @@ rentalSchema.statics.lookup = function(customerId, movieId) {
     "customer._id": customerId,
     "movie._id": movieId
   });
+};
+
+//Instance method
+rentalSchema.methods.return = function() {
+  this.dateReturned = new Date();
+
+  const rentalDays = moment().diff(this.dateOut, "days");
+  this.rentalFee = rentalDays * this.movie.dailyRentalRate;
 };
 
 //Persistance model - whats stored in the DB
