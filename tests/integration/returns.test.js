@@ -10,6 +10,7 @@
 //Set the rental fee
 //Increase the stock
 //Return the rental
+const request = require("supertest");
 const { Rental } = require("../../models/rental");
 const mongoose = require("mongoose");
 describe("/returns", () => {
@@ -42,8 +43,11 @@ describe("/returns", () => {
     await Rental.remove({});
   });
 
-  it("should work!", async () => {
-    const result = await Rental.findById(rental._id);
-    expect(result).not.toBeNull();
+  it("should return 401 if client is not logged in!", async () => {
+    const res = await request(server)
+      .post("/returns")
+      .send({ customerId, movieId });
+
+    expect(res.status).toBe(401);
   });
 });
