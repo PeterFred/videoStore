@@ -7,6 +7,7 @@ const auth = require("../routes/auth");
 const customers = require("../routes/customers");
 const movies = require("../routes/movies");
 const rentals = require("../routes/rentals");
+const returns = require("../routes/returns");
 
 module.exports = function(app) {
   app.use(express.json());
@@ -16,6 +17,7 @@ module.exports = function(app) {
   app.use("/rentals", rentals);
   app.use("/users", users);
   app.use("/auth", auth);
+  app.use("/returns", returns);
 
   app.get("/", (req, res) => {
     res.send("Welcome to VideoStore app");
