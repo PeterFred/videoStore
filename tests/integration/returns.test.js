@@ -22,10 +22,27 @@ describe("/returns", () => {
   let movieId;
   let rental;
 
+  //############################################
+  // Define the happy path, and then in each test, we change
+  // one parameter that clearly aligns with the name of the test.
+  let token;
+  let name;
+
+  const exec = () => {
+    return request(server)
+      .post("/genres")
+      .set("x-auth-token", token)
+      .send({ customerId, movieId });
+  };
+
+  //########################
+  //Set up before / after each test
+
   beforeEach(async () => {
     server = require("../../index");
     customerId = mongoose.Types.ObjectId();
     movieId = mongoose.Types.ObjectId();
+    token = new User().generateAuthToken();
 
     rental = new Rental({
       customer: {
@@ -46,32 +63,27 @@ describe("/returns", () => {
     await Rental.remove({});
   });
 
+  //##################################################
+
   it("should return 401 if client is not logged in", async () => {
-    const res = await request(server)
-      .post("/returns")
-      .send({ customerId, movieId });
+    token = "";
+    const res = await exec();
 
     expect(res.status).toBe(401);
   });
 
   it("should return 400 if customerId is not provided", async () => {
-    const token = new User().generateAuthToken();
-
-    const res = await request(server)
-      .post("/returns")
-      .set("x-auth-token", token)
-      .send({ movieId }); //customerId omitted
+    customerId = "";
+    const res = await exec();
 
     expect(res.status).toBe(400);
   });
 
-  it("should return 400 if customerId is not provided", async () => {
-    const token = new User().generateAuthToken();
+  it("should return 400 if movieId is not provided", async () => {
+    movieId = "";
+    const res = await exec();
 
-    const res = await request(server)
-      .post("/returns")
-      .set("x-auth-token", token)
-      .send({ customerId }); //customerId omitted
+    expect(res.status).toBe(400);
 
     expect(res.status).toBe(400);
   });
