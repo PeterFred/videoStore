@@ -54,13 +54,24 @@ describe("/returns", () => {
     expect(res.status).toBe(401);
   });
 
-  it("should return 401 400 if customerId is not provided", async () => {
+  it("should return 400 if customerId is not provided", async () => {
     const token = new User().generateAuthToken();
 
     const res = await request(server)
       .post("/returns")
       .set("x-auth-token", token)
       .send({ movieId }); //customerId omitted
+
+    expect(res.status).toBe(400);
+  });
+
+  it("should return 400 if customerId is not provided", async () => {
+    const token = new User().generateAuthToken();
+
+    const res = await request(server)
+      .post("/returns")
+      .set("x-auth-token", token)
+      .send({ customerId }); //customerId omitted
 
     expect(res.status).toBe(400);
   });
